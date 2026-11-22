@@ -84,6 +84,30 @@ test("rejects an unclosed quoted field", () => {
   assert.throws(() => parseCSV('a,b\n1,"broken'), /aspas que não foi fechado/);
 });
 
+test("preserves records with explicitly empty fields while ignoring blank lines", () => {
+  assert.deepEqual(parseCSV('a,b\r\n,\r\n\r\n"",""\r\n1,2\r\n'), {
+    headers: ["a", "b"],
+    rows: [["", ""], ["", ""], ["1", "2"]],
+    delimiter: ",",
+  });
+});
+
+test("preserves a quoted empty record in a single-column CSV", () => {
+  assert.deepEqual(parseCSV('name\n\n""\nAna\n'), {
+    headers: ["name"],
+    rows: [[""], ["Ana"]],
+    delimiter: ",",
+  });
+});
+
+test("accepts an empty data record and generates names for empty headers", () => {
+  assert.deepEqual(parseCSV(';\n;'), {
+    headers: ["Coluna 1", "Coluna 2"],
+    rows: [["", ""]],
+    delimiter: ";",
+  });
+});
+
 test("rejects invalid content after a quoted field", () => {
   assert.throws(() => parseCSV('a,b\n"value"oops,2'), /texto inesperado/);
 });
