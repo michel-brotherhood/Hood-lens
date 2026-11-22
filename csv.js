@@ -6,6 +6,7 @@ function parseRecords(source, delimiter) {
   let field = "";
   let inQuotes = false;
   let afterQuote = false;
+  let recordHasSyntax = false;
 
   const finishField = () => {
     row.push(field);
@@ -14,12 +15,14 @@ function parseRecords(source, delimiter) {
   };
   const finishRow = () => {
     finishField();
-    if (row.some((value) => value !== "")) records.push(row);
+    if (recordHasSyntax) records.push(row);
     row = [];
+    recordHasSyntax = false;
   };
 
   for (let index = 0; index < source.length; index++) {
     const char = source[index];
+    if (char !== "\n" && char !== "\r") recordHasSyntax = true;
 
     if (inQuotes) {
       if (char === '"' && source[index + 1] === '"') {
