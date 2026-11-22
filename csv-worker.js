@@ -3,7 +3,9 @@ import { parseCSV } from "./csv.js";
 self.onmessage = async ({ data: { file, delimiter } }) => {
   try {
     const text = await file.text();
-    self.postMessage({ result: parseCSV(text, { delimiter }) });
+    self.postMessage({
+      result: parseCSV(text, { delimiter, includeHeaderMetadata: true }),
+    });
   } catch (error) {
     self.postMessage({
       error:

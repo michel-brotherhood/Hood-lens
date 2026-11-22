@@ -1,6 +1,6 @@
 # Hood Lens
 
-**A closer look at your CSV.** Open, search, sort and export CSV data locally in your browser. No account and no file uploads.
+**Uma ferramenta Behood para explorar seus dados. / A Behood tool to explore your data.** Open, search, sort and export CSV data locally in your browser. No account and no file uploads.
 
 Hood Lens is the next version of CSV Lens. The product name has changed; the existing `michel-brotherhood/csv-lens` repository and GitHub Pages address can stay as they are.
 
@@ -40,9 +40,13 @@ Alternatively, `npm run build` creates `dist/` with only public application asse
 
 ## Design and language
 
-The interface, errors, status announcements, generated column names and sample dataset are in English. Imported file contents are never translated. Hood Lens uses the supplied Hood artwork, an ink-black/off-white palette, a restrained magenta accent and locally available fonts. No remote fonts or analytics are loaded. The opening artwork collapses once a file is opened, leaving a compact data workspace. Reduced-motion preferences are respected.
+Version 1.3 provides Portuguese (default) and English via the PT/EN switch. Interface labels, metadata, errors, pagination, accessible labels and generated column names update immediately, preserving the open file, search and page. The language preference is stored locally; CSV data is never saved to local storage or translated. The synthetic sample remains data rather than translated interface content.
 
-The supplied artwork is included as optimized WebP assets. `LICENSE` covers the source code; it does not grant rights to the Hood/Brotherhood brand or supplied artwork.
+The design uses a light workspace, a compact sidebar, readable typography and the supplied Hood emblem with its black background removed. Artwork assets use real alpha transparency. No remote fonts or analytics are loaded. Reduced-motion preferences are respected.
+
+© 2026 Behood — [behood.com.br](https://behood.com.br).
+
+The supplied artwork is included as optimized WebP assets. `LICENSE` covers the source code; it does not grant rights to the Behood/Hood brand or supplied artwork.
 
 ## Data handling and limits
 
@@ -65,15 +69,16 @@ The automated suite covers parsing, formula protection, import cancellation, com
 
 ## Project structure
 
-| Path                       | Purpose                                       |
-| -------------------------- | --------------------------------------------- |
-| `index.html`, `styles.css` | Responsive interface and visual identity      |
-| `app.js`                   | Import lifecycle, filtering, table and export |
-| `csv.js`, `csv-worker.js`  | CSV parser, formula protection and worker     |
-| `assets/`                  | Hood artwork and small brand image            |
-| `examples/demo.csv`        | Synthetic sample inventory                    |
-| `*.test.js`                | Regression and interface tests                |
-| `scripts/build.mjs`        | Public-file build with an explicit allowlist  |
+| Path                       | Purpose                                                     |
+| -------------------------- | ----------------------------------------------------------- |
+| `index.html`, `styles.css` | Responsive interface and visual identity                    |
+| `i18n.js`                  | Portuguese/English interface messages and error translation |
+| `app.js`                   | Import lifecycle, filtering, table and export               |
+| `csv.js`, `csv-worker.js`  | CSV parser, formula protection and worker                   |
+| `assets/`                  | Hood artwork and small brand image                          |
+| `examples/demo.csv`        | Synthetic sample inventory                                  |
+| `*.test.js`                | Regression and interface tests                              |
+| `scripts/build.mjs`        | Public-file build with an explicit allowlist                |
 
 ## Contributing
 

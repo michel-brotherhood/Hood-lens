@@ -1,0 +1,202 @@
+export const messages = {
+  pt: {
+    title: "Hood Lens — explore seus dados",
+    description:
+      "Abra, filtre e exporte arquivos CSV no seu navegador. Seus arquivos ficam no seu dispositivo.",
+    skip: "Ir para a ferramenta",
+    home: "Hood Lens, início",
+    toolkit: "FERRAMENTAS BEHOOD",
+    navWorkspace: "Área de trabalho",
+    navAbout: "Sobre a ferramenta",
+    sidebarTitle: "Um olhar mais claro sobre seus dados.",
+    sidebarCopy:
+      "Uma ferramenta independente para simplificar o trabalho com tabelas.",
+    local: "Processamento local",
+    breadcrumb: "Explorador de CSV",
+    language: "Idioma",
+    eyebrow: "SEU ARQUIVO. SEU CONTROLE.",
+    heading: "Seus dados, mais claros.",
+    intro:
+      "Encontre o que importa no seu CSV. Pesquise, organize e exporte sem enviar seu arquivo para um servidor.",
+    dropTitle: "Arraste seu CSV para começar",
+    dropCopy: "ou selecione um arquivo no seu dispositivo",
+    open: "Escolher arquivo",
+    fileLimit: "CSV até 20 MB · UTF-8",
+    delimiter: "Separador",
+    auto: "Detectar automaticamente",
+    comma: "Vírgula (,)",
+    semicolon: "Ponto e vírgula (;)",
+    tab: "Tabulação",
+    demo: "Experimentar com exemplo",
+    demoNote: "Dados fictícios, prontos para explorar.",
+    sampleDownload: "Baixar CSV de exemplo",
+    privacyTitle: "Seus dados continuam seus.",
+    privacyCopy:
+      "O arquivo é processado neste navegador. Não enviamos seu conteúdo e não exigimos cadastro.",
+    stepOpen: "Abra um arquivo",
+    stepOpenCopy: "Escolha seu CSV ou use o exemplo.",
+    stepExplore: "Encontre o que precisa",
+    stepExploreCopy: "Busque e ordene os dados por coluna.",
+    stepExport: "Leve só o que importa",
+    stepExportCopy: "Exporte todos os resultados da busca.",
+    loading: "Lendo seu arquivo…",
+    cancel: "Cancelar importação",
+    yourData: "Seus dados",
+    close: "Fechar arquivo",
+    dataHeading: "Explore sua tabela",
+    search: "Buscar em todas as colunas",
+    searchPlaceholder: "O que você procura?",
+    rows: "Linhas",
+    columns: "Colunas",
+    matches: "Resultados",
+    export: "Exportar resultados",
+    tableRegion: "Tabela CSV. Role na horizontal para ver mais colunas.",
+    caption: "Dados do arquivo CSV. Clique no cabeçalho para ordenar.",
+    pagination: "Paginação",
+    previous: "Página anterior",
+    next: "Próxima página",
+    tableNote:
+      "Clique no cabeçalho para ordenar. A busca ignora maiúsculas e acentos. A exportação inclui todos os resultados e usa ponto e vírgula.",
+    noMatches: "Nenhum resultado. Tente outra busca.",
+    sort: "Ordenar por {header}",
+    resultCount: "{count} resultado{plural}",
+    page: "Página {page} de {pages}",
+    meta: "{rows} linhas · {columns} colunas · {size} · separador: {delimiter}",
+    delimiterComma: "vírgula",
+    delimiterSemicolon: "ponto e vírgula",
+    delimiterTab: "tabulação",
+    opened: "{name} carregado com {count} linhas.",
+    reading: "Processando arquivo.",
+    closed: "Arquivo fechado.",
+    failed: "Não foi possível abrir o arquivo.",
+    exported: "{count} linhas exportadas.",
+    column: "Coluna {index}",
+    filteredSuffix: "filtrado",
+    rights: "Todos os direitos reservados.",
+    aboutTitle: "Feito para simplificar.",
+    aboutCopy:
+      "Hood Lens é um explorador de arquivos CSV da Behood. Abra um arquivo, encontre registros e exporte um recorte dos seus dados.",
+    aboutLimits:
+      "Aceita CSV em UTF-8 de até 20 MB. Não é um editor de planilhas. A detecção de separador é automática, mas pode ser ajustada. O desempenho depende do arquivo e do dispositivo.",
+    aboutPrivacy:
+      "Arquivos e tabelas ficam na memória desta aba. Ao fechar o arquivo, os dados são removidos da interface. Apenas a preferência de idioma é salva neste navegador.",
+    aboutClose: "Voltar à ferramenta",
+    noScript:
+      "Ative o JavaScript para processar arquivos CSV no seu navegador.",
+  },
+  en: {
+    title: "Hood Lens — explore your data",
+    description:
+      "Open, filter and export CSV files in your browser. Your files stay on your device.",
+    skip: "Skip to workspace",
+    home: "Hood Lens home",
+    toolkit: "BEHOOD TOOLS",
+    navWorkspace: "Workspace",
+    navAbout: "About this tool",
+    sidebarTitle: "A clearer view of your data.",
+    sidebarCopy:
+      "An independent tool to make everyday work with tables a little easier.",
+    local: "Local processing",
+    breadcrumb: "CSV explorer",
+    language: "Language",
+    eyebrow: "YOUR FILE. YOUR CONTROL.",
+    heading: "Your data, made clear.",
+    intro:
+      "Find what matters in your CSV. Search, organize and export without sending your file to a server.",
+    dropTitle: "Drop your CSV to get started",
+    dropCopy: "or choose a file from your device",
+    open: "Choose a file",
+    fileLimit: "CSV up to 20 MB · UTF-8",
+    delimiter: "Delimiter",
+    auto: "Detect automatically",
+    comma: "Comma (,)",
+    semicolon: "Semicolon (;)",
+    tab: "Tab",
+    demo: "Try a sample file",
+    demoNote: "Synthetic data, ready to explore.",
+    sampleDownload: "Download sample CSV",
+    privacyTitle: "Your data stays yours.",
+    privacyCopy:
+      "Files are processed in this browser. We do not upload their contents or require an account.",
+    stepOpen: "Open a file",
+    stepOpenCopy: "Choose your CSV or try the sample.",
+    stepExplore: "Find what you need",
+    stepExploreCopy: "Search and sort the data by column.",
+    stepExport: "Take what matters",
+    stepExportCopy: "Export every matching result.",
+    loading: "Reading your file…",
+    cancel: "Cancel import",
+    yourData: "Your data",
+    close: "Close file",
+    dataHeading: "Explore your table",
+    search: "Search all columns",
+    searchPlaceholder: "What are you looking for?",
+    rows: "Rows",
+    columns: "Columns",
+    matches: "Matches",
+    export: "Export results",
+    tableRegion: "CSV table. Scroll horizontally to see more columns.",
+    caption: "CSV file data. Select a heading to sort.",
+    pagination: "Pagination",
+    previous: "Previous page",
+    next: "Next page",
+    tableNote:
+      "Select a heading to sort. Search ignores case and accents. Exports include every matching row and use semicolons.",
+    noMatches: "No matches. Try a different search.",
+    sort: "Sort by {header}",
+    resultCount: "{count} match{plural}",
+    page: "Page {page} of {pages}",
+    meta: "{rows} rows · {columns} columns · {size} · delimiter: {delimiter}",
+    delimiterComma: "comma",
+    delimiterSemicolon: "semicolon",
+    delimiterTab: "tab",
+    opened: "{name} opened with {count} rows.",
+    reading: "Reading your file.",
+    closed: "File closed.",
+    failed: "Could not open the file.",
+    exported: "{count} rows exported.",
+    column: "Column {index}",
+    filteredSuffix: "filtered",
+    rights: "All rights reserved.",
+    aboutTitle: "Made to keep things simple.",
+    aboutCopy:
+      "Hood Lens is a CSV explorer by Behood. Open a file, find records and export a useful slice of your data.",
+    aboutLimits:
+      "Supports UTF-8 CSV files up to 20 MB. It is not a spreadsheet editor. Delimiter detection is automatic and can be changed. Performance depends on your file and device.",
+    aboutPrivacy:
+      "Files and tables stay in this tab’s memory. Closing a file removes its data from the interface. Only your language preference is saved in this browser.",
+    aboutClose: "Back to workspace",
+    noScript: "Enable JavaScript to process CSV files in your browser.",
+  },
+};
+const portugueseErrors = {
+  "Could not process this CSV. Reload the page and try again.":
+    "Não foi possível processar o CSV. Recarregue a página e tente novamente.",
+  "Could not read this file.": "Não foi possível ler este arquivo.",
+  "Could not read the file.": "Não foi possível ler o arquivo.",
+  "This file exceeds the 20 MB limit.":
+    "Este arquivo ultrapassa o limite de 20 MB.",
+  "Choose a CSV file.": "Escolha um arquivo CSV.",
+  "Could not load the sample. Try again or open a CSV file.":
+    "Não foi possível carregar o exemplo. Tente novamente ou abra um CSV.",
+  "Unexpected text after a quoted field.":
+    "Há texto inesperado depois de um campo entre aspas.",
+  "A quote was found inside an unquoted field.":
+    "Há aspas fora do início de um campo.",
+  "The file contains an unclosed quoted field.":
+    "O arquivo contém um campo entre aspas que não foi fechado.",
+  "Could not parse this CSV.": "Não foi possível interpretar este CSV.",
+  "Invalid delimiter. Choose comma, semicolon or tab.":
+    "Separador inválido. Escolha vírgula, ponto e vírgula ou tabulação.",
+  "The file needs a header and at least one data row.":
+    "O arquivo precisa de um cabeçalho e pelo menos uma linha de dados.",
+};
+export function text(language, key, values = {}) {
+  const template = (messages[language] || messages.pt)[key] || key;
+  return template.replace(/\{(\w+)\}/g, (_, name) =>
+    String(values[name] ?? ""),
+  );
+}
+export function errorText(language, message) {
+  return language === "pt" ? portugueseErrors[message] || message : message;
+}

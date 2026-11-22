@@ -4,9 +4,13 @@
 
 Quick inspection of CSV files: find records, check the shape of a table and export a filtered subset. This is not a spreadsheet editor or statistical analysis suite.
 
+## Languages
+
+Portuguese is the default; PT/EN switches the interface and status text without translating imported records or resetting the active search. Only this language preference is persisted.
+
 ## Main flow
 
-Open a file or try the synthetic sample, inspect rows, search, sort, and export. Import settings remain available after opening a file. The introduction and artwork collapse while data is open to prioritize the table. Closing the file returns to the opening view.
+Open a file or try the synthetic sample, inspect rows, search, sort, and export. Import settings remain available after opening a file. The introduction collapses while data is open to prioritize the table. The transparent artwork remains in the compact desktop sidebar. Closing the file returns to the opening view.
 
 ## States
 

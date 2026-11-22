@@ -8,6 +8,7 @@ for (const file of [
   "index.html",
   "styles.css",
   "app.js",
+  "i18n.js",
   "csv.js",
   "csv-worker.js",
   "examples/demo.csv",

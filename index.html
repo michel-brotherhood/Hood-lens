@@ -1,279 +1,377 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#101010" />
+    <meta name="theme-color" content="#f7f7fa" />
     <meta
       name="description"
-      content="A closer look at your CSV. Open, search, sort and export data locally in your browser with Hood Lens. No account. No file uploads."
+      content="Abra, filtre e exporte arquivos CSV no seu navegador. Seus arquivos ficam no seu dispositivo."
     />
-    <meta property="og:title" content="Hood Lens — A closer look at your CSV" />
+    <meta property="og:title" content="Hood Lens — explore seus dados" />
     <meta
       property="og:description"
-      content="Open the file. Find what matters. Keep your data to yourself."
+      content="Uma ferramenta Behood para explorar arquivos CSV com processamento local."
     />
     <meta property="og:type" content="website" />
-    <title>Hood Lens — A closer look at your CSV</title>
+    <title>Hood Lens — explore seus dados</title>
     <link rel="icon" type="image/webp" href="assets/hood-mark.webp" />
     <link rel="stylesheet" href="styles.css" />
     <script type="module" src="app.js"></script>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to workspace</a>
-    <header class="topbar">
-      <a class="brand" href="./" aria-label="Hood Lens home">
-        <img
-          class="brand-mark"
-          src="assets/hood-mark.webp"
-          alt=""
-          width="48"
-          height="48"
-        />
-        <span class="wordmark"
-          >hood<span class="brand-light">lens</span
-          ><span class="brand-period">.</span></span
+    <a class="skip-link" href="#main" data-i18n="skip">Ir para a ferramenta</a>
+    <aside class="sidebar">
+      <a
+        class="brand"
+        href="./"
+        data-i18n-aria-label="home"
+        aria-label="Hood Lens, início"
+        ><img src="assets/hood-mark.webp" width="68" height="68" alt="" /><span
+          >Hood<span class="brand-light">Lens</span
+          ><span class="brand-dot">.</span></span
+        ></a
+      >
+      <p class="sidebar-label" data-i18n="toolkit">FERRAMENTAS BEHOOD</p>
+      <nav class="side-nav">
+        <a href="#main" aria-current="page"
+          ><svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="4" width="16" height="16" rx="3" />
+            <path d="M4 10h16M10 10v10" /></svg
+          ><span data-i18n="navWorkspace">Área de trabalho</span></a
+        ><button
+          id="about-open"
+          type="button"
+          data-i18n-aria-label="navAbout"
+          aria-label="Sobre a ferramenta"
         >
-      </a>
-      <div class="header-label">
-        <span class="small-cross" aria-hidden="true">+</span> A SMALL TOOL FOR
-        BIG TABLES
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="8" />
+            <path d="M12 11v6M12 7v2" /></svg
+          ><span data-i18n="navAbout">Sobre a ferramenta</span>
+        </button>
+      </nav>
+      <div class="sidebar-identity">
+        <img src="assets/hood-art.webp" alt="" width="240" height="240" />
+        <h2 data-i18n="sidebarTitle">Um olhar mais claro sobre seus dados.</h2>
+        <p data-i18n="sidebarCopy">
+          Uma ferramenta independente para simplificar o trabalho com tabelas.
+        </p>
       </div>
       <a
-        class="source-link"
-        href="https://github.com/michel-brotherhood/csv-lens"
+        class="behood-signature"
+        href="https://behood.com.br"
         target="_blank"
         rel="noopener noreferrer"
-        >GitHub <span aria-hidden="true">↗</span></a
+        >behood<span aria-hidden="true">↗</span></a
       >
-    </header>
-
-    <main id="main" class="shell">
-      <div class="workspace-heading">
-        <span>WORKSPACE / CSV EXPLORER</span
-        ><span class="privacy"
-          ><span class="status-dot" aria-hidden="true"></span> Local
-          processing</span
-        >
-      </div>
-      <section class="entry" aria-label="Open a CSV">
-        <div class="entry-main">
-          <div class="intro">
-            <p class="eyebrow">LESS SPREADSHEET. MORE PERSPECTIVE.</p>
-            <h1>A closer look.<br /><em>A clearer picture.</em></h1>
-            <p class="intro-copy">
-              The useful part of your CSV, without the noise.<br
-                class="desktop-break"
-              />
-              Open it, find it, take only what you need.
-            </p>
-          </div>
-          <section
-            id="dropzone"
-            class="dropzone"
-            aria-label="CSV file drop area"
+    </aside>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="breadcrumb">
+          <span class="crumb-home" aria-hidden="true">⌂</span
+          ><span aria-hidden="true">/</span
+          ><span data-i18n="breadcrumb">Explorador de CSV</span>
+        </div>
+        <div class="header-actions">
+          <span class="privacy-badge"
+            ><span aria-hidden="true"></span
+            ><span data-i18n="local">Processamento local</span></span
           >
-            <input
-              id="file-input"
-              type="file"
-              accept=".csv,text/csv,text/plain"
-              hidden
-            />
-            <div class="dropzone-top">
-              <svg
-                class="upload-icon"
-                viewBox="0 0 32 32"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M18 4H7v24h18V11L18 4Z"
-                  stroke="currentColor"
-                  stroke-width="1.4"
-                />
-                <path
-                  d="M18 4v7h7M16 23V15m-4 4 4-4 4 4"
-                  stroke="currentColor"
-                  stroke-width="1.4"
-                />
-              </svg>
-              <div>
-                <h2>Drop a CSV. Get a little clarity.</h2>
-                <p>Up to 20 MB. Processed right here in your browser.</p>
-              </div>
-            </div>
-            <div class="import-actions">
-              <button
-                id="choose-file"
-                class="button button-primary"
-                type="button"
-              >
-                Open a file <span aria-hidden="true">↗</span>
-              </button>
-              <label class="select-label" for="delimiter"
-                >Delimiter
-                <select id="delimiter">
-                  <option value="auto">Auto-detect</option>
-                  <option value=",">Comma (,)</option>
-                  <option value=";">Semicolon (;)</option>
-                  <option value="tab">Tab</option>
-                </select></label
-              >
-            </div>
-          </section>
-          <div class="demo-actions">
-            <button id="load-demo" class="text-button" type="button">
-              Take a look with sample data
-              <span aria-hidden="true">→</span></button
-            ><a href="examples/demo.csv" download>Download sample CSV</a>
+          <div
+            class="language-switch"
+            role="group"
+            data-i18n-aria-label="language"
+            aria-label="Idioma"
+          >
+            <button
+              type="button"
+              data-language="pt"
+              aria-pressed="true"
+              aria-label="Português"
+            >
+              PT</button
+            ><button
+              type="button"
+              data-language="en"
+              aria-pressed="false"
+              aria-label="English"
+            >
+              EN
+            </button>
           </div>
         </div>
-        <figure class="identity-art">
-          <div class="art-topline">
-            <span>HOOD / INDEPENDENT TOOLS</span
-            ><span aria-hidden="true">↗</span>
-          </div>
-          <img
-            src="assets/hood-art.webp"
-            alt="Hood character against a red moon and magenta city skyline"
-            width="720"
-            height="720"
-            fetchpriority="high"
+      </header>
+      <main id="main" class="main">
+        <section class="intro">
+          <p class="eyebrow" data-i18n="eyebrow">SEU ARQUIVO. SEU CONTROLE.</p>
+          <h1 data-i18n="heading">Seus dados, mais claros.</h1>
+          <p data-i18n="intro">
+            Encontre o que importa no seu CSV. Pesquise, organize e exporte sem
+            enviar seu arquivo para um servidor.
+          </p>
+        </section>
+        <section
+          id="dropzone"
+          class="dropzone"
+          data-i18n-aria-label="dropTitle"
+          aria-label="Importar CSV"
+        >
+          <input
+            id="file-input"
+            type="file"
+            accept=".csv,text/csv,text/plain"
+            hidden
           />
-          <figcaption>
-            <span>Built to look closer.</span
-            ><span class="art-index">001 — LENS</span>
-          </figcaption>
-        </figure>
-      </section>
-
-      <div id="loading" class="loading-panel" hidden>
-        <p role="status">
-          <span class="loading-dot" aria-hidden="true"></span>Reading your file…
-        </p>
-        <button id="cancel-load" class="text-button" type="button">
-          Cancel import <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div id="error-box" class="error-box" role="alert" hidden></div>
-
-      <section id="workspace" class="workspace" aria-label="Your data" hidden>
-        <div class="file-row">
-          <div class="file-info">
-            <span class="file-icon">CSV</span>
-            <div>
-              <strong id="file-name"></strong><small id="file-meta"></small>
+          <div class="dropzone-content">
+            <div class="upload-icon">
+              <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <path d="M18 4H7v24h18V11L18 4Z" />
+                <path d="M18 4v7h7M16 23V15m-4 4 4-4 4 4" />
+              </svg>
             </div>
+            <h2 data-i18n="dropTitle">Arraste seu CSV para começar</h2>
+            <p class="drop-copy" data-i18n="dropCopy">
+              ou selecione um arquivo no seu dispositivo
+            </p>
+            <button
+              id="choose-file"
+              class="button button-primary"
+              type="button"
+            >
+              <span data-i18n="open">Escolher arquivo</span
+              ><span aria-hidden="true">↗</span></button
+            ><small data-i18n="fileLimit">CSV até 20 MB · UTF-8</small>
           </div>
+          <div class="import-options">
+            <label for="delimiter"
+              ><span data-i18n="delimiter">Separador</span
+              ><select id="delimiter">
+                <option value="auto" data-i18n="auto">
+                  Detectar automaticamente
+                </option>
+                <option value="," data-i18n="comma">Vírgula (,)</option>
+                <option value=";" data-i18n="semicolon">
+                  Ponto e vírgula (;)
+                </option>
+                <option value="tab" data-i18n="tab">Tabulação</option>
+              </select></label
+            ><a href="examples/demo.csv" download data-i18n="sampleDownload"
+              >Baixar CSV de exemplo</a
+            >
+          </div>
+        </section>
+        <div id="loading" class="loading-panel" hidden>
+          <p role="status">
+            <span class="loading-dot" aria-hidden="true"></span
+            ><span data-i18n="loading">Lendo seu arquivo…</span>
+          </p>
           <button
-            id="clear-file"
-            class="text-button close-button"
+            id="cancel-load"
+            class="text-button"
             type="button"
+            data-i18n="cancel"
           >
-            Close file <span aria-hidden="true">×</span>
+            Cancelar importação
           </button>
         </div>
-        <div class="data-heading">
-          <h2>The whole picture.</h2>
-          <div id="stats" class="stats" aria-live="polite"></div>
-        </div>
-        <div class="toolbar">
-          <label class="search-box"
-            ><svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <circle
-                cx="8.5"
-                cy="8.5"
-                r="5.5"
-                stroke="currentColor"
-                stroke-width="1.4"
-              />
-              <path
-                d="m13 13 4 4"
-                stroke="currentColor"
-                stroke-width="1.4"
-              /></svg
-            ><input
-              id="search"
-              type="search"
-              aria-label="Search all columns"
-              placeholder="Find something in your data…"
-              autocomplete="off"
-            /><kbd>Ctrl K</kbd></label
-          >
-          <div class="toolbar-actions">
-            <label class="select-label" for="page-size"
-              >Rows
-              <select id="page-size">
-                <option>25</option>
-                <option>50</option>
-                <option>100</option>
-              </select></label
-            ><button id="export" class="button button-primary" type="button">
-              Export results <span aria-hidden="true">↓</span>
+        <div id="error-box" class="error-box" role="alert" hidden></div>
+        <div class="demo-panel">
+          <div class="demo-icon" aria-hidden="true">↗</div>
+          <div>
+            <button id="load-demo" class="text-button" type="button">
+              <span data-i18n="demo">Experimentar com exemplo</span
+              ><span aria-hidden="true">→</span>
             </button>
+            <p data-i18n="demoNote">Dados fictícios, prontos para explorar.</p>
           </div>
         </div>
-        <div
-          class="table-wrap"
-          tabindex="0"
-          role="region"
-          aria-label="CSV data table, scroll horizontally to see more columns"
+        <section
+          id="workspace"
+          class="workspace"
+          hidden
+          data-i18n-aria-label="yourData"
+          aria-label="Seus dados"
         >
-          <table id="data-table">
-            <caption class="sr-only">
-              Data from your CSV file. Select a column heading to sort.
-            </caption>
-            <thead></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div class="table-footer">
-          <span id="result-count"></span>
-          <nav class="pagination" aria-label="Pagination">
+          <div class="file-row">
+            <div class="file-info">
+              <span class="file-icon">CSV</span>
+              <div>
+                <strong id="file-name"></strong><small id="file-meta"></small>
+              </div>
+            </div>
             <button
-              id="previous"
-              class="page-button"
+              id="clear-file"
+              class="text-button close-button"
               type="button"
-              aria-label="Previous page"
             >
-              ←</button
-            ><span id="page-label"></span
-            ><button
-              id="next"
-              class="page-button"
-              type="button"
-              aria-label="Next page"
-            >
-              →
+              <span data-i18n="close">Fechar arquivo</span
+              ><span aria-hidden="true">×</span>
             </button>
-          </nav>
+          </div>
+          <div class="data-heading">
+            <h2 data-i18n="dataHeading">Explore sua tabela</h2>
+            <div id="stats" class="stats" aria-live="polite"></div>
+          </div>
+          <div class="toolbar">
+            <label class="search-box"
+              ><svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="8.5" cy="8.5" r="5.5" />
+                <path d="m13 13 4 4" /></svg
+              ><input
+                id="search"
+                type="search"
+                data-i18n-aria-label="search"
+                aria-label="Buscar em todas as colunas"
+                data-i18n-placeholder="searchPlaceholder"
+                placeholder="O que você procura?"
+                autocomplete="off"
+              /><kbd>Ctrl K</kbd></label
+            >
+            <div class="toolbar-actions">
+              <label class="select-label" for="page-size"
+                ><span data-i18n="rows">Linhas</span
+                ><select id="page-size">
+                  <option>25</option>
+                  <option>50</option>
+                  <option>100</option>
+                </select></label
+              ><button id="export" class="button button-primary" type="button">
+                <span data-i18n="export">Exportar resultados</span
+                ><span aria-hidden="true">↓</span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="table-wrap"
+            tabindex="0"
+            role="region"
+            data-i18n-aria-label="tableRegion"
+            aria-label="Tabela CSV. Role na horizontal para ver mais colunas."
+          >
+            <table id="data-table">
+              <caption class="sr-only" data-i18n="caption">
+                Dados do arquivo CSV. Clique no cabeçalho para ordenar.
+              </caption>
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <span id="result-count"></span>
+            <nav
+              class="pagination"
+              data-i18n-aria-label="pagination"
+              aria-label="Paginação"
+            >
+              <button
+                id="previous"
+                class="page-button"
+                type="button"
+                data-i18n-aria-label="previous"
+                aria-label="Página anterior"
+              >
+                ←</button
+              ><span id="page-label"></span
+              ><button
+                id="next"
+                class="page-button"
+                type="button"
+                data-i18n-aria-label="next"
+                aria-label="Próxima página"
+              >
+                →
+              </button>
+            </nav>
+          </div>
+          <p class="table-note" data-i18n="tableNote">
+            Clique no cabeçalho para ordenar. A busca ignora maiúsculas e
+            acentos. A exportação inclui todos os resultados e usa ponto e
+            vírgula.
+          </p>
+        </section>
+        <section class="privacy-note">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
+            <path d="m8 12 3 3 5-6" />
+          </svg>
+          <div>
+            <h2 data-i18n="privacyTitle">Seus dados continuam seus.</h2>
+            <p data-i18n="privacyCopy">
+              O arquivo é processado neste navegador. Não enviamos seu conteúdo
+              e não exigimos cadastro.
+            </p>
+          </div>
+        </section>
+        <div class="steps">
+          <div>
+            <span class="step-number">01</span>
+            <h3 data-i18n="stepOpen">Abra um arquivo</h3>
+            <p data-i18n="stepOpenCopy">Escolha seu CSV ou use o exemplo.</p>
+          </div>
+          <div>
+            <span class="step-number">02</span>
+            <h3 data-i18n="stepExplore">Encontre o que precisa</h3>
+            <p data-i18n="stepExploreCopy">
+              Busque e ordene os dados por coluna.
+            </p>
+          </div>
+          <div>
+            <span class="step-number">03</span>
+            <h3 data-i18n="stepExport">Leve só o que importa</h3>
+            <p data-i18n="stepExportCopy">
+              Exporte todos os resultados da busca.
+            </p>
+          </div>
         </div>
-        <p class="table-note">
-          Click a column heading to sort. Search ignores case and accents.
-          Exports use semicolons and include every matching row.
+        <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+        <noscript
+          ><p data-i18n="noScript">
+            Ative o JavaScript para processar arquivos CSV no seu navegador.
+          </p></noscript
+        >
+      </main>
+      <footer class="footer">
+        <p>
+          © <span id="copyright-year">2026</span>
+          <a
+            href="https://behood.com.br"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Behood</a
+          >. <span data-i18n="rights">Todos os direitos reservados.</span>
         </p>
-      </section>
-      <div class="principles">
-        <p><span>01</span> Open the file.</p>
-        <p><span>02</span> Find what matters.</p>
-        <p><span>03</span> Keep it to yourself.</p>
-      </div>
-      <p id="status" class="sr-only" role="status" aria-live="polite"></p>
-      <noscript
-        ><p class="error-box">
-          Hood Lens needs JavaScript to read CSV files locally. Please enable it
-          and reload this page.
-        </p></noscript
+        <a
+          href="https://behood.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
+          >behood.com.br <span aria-hidden="true">↗</span></a
+        >
+      </footer>
+    </div>
+    <dialog id="about-dialog" aria-labelledby="about-title">
+      <button
+        id="about-x"
+        class="dialog-x"
+        type="button"
+        data-i18n-aria-label="aboutClose"
+        aria-label="Voltar à ferramenta"
       >
-    </main>
-    <footer class="footer">
-      <p>
-        HOOD LENS<span class="footer-divider">/</span
-        ><span>By Michel Brotherhood</span>
-      </p>
-      <p>
-        No account. No file uploads. <span class="footer-version">v1.2</span>
-      </p>
-    </footer>
+        ×
+      </button>
+      <p class="eyebrow">BEHOOD / HOOD LENS</p>
+      <h2 id="about-title" data-i18n="aboutTitle">Feito para simplificar.</h2>
+      <p data-i18n="aboutCopy"></p>
+      <p data-i18n="aboutLimits"></p>
+      <p data-i18n="aboutPrivacy"></p>
+      <button
+        id="about-close"
+        class="button button-primary"
+        type="button"
+        data-i18n="aboutClose"
+      >
+        Voltar à ferramenta
+      </button>
+    </dialog>
   </body>
 </html>

@@ -4,18 +4,22 @@ import { readFile } from "node:fs/promises";
 import { setTimeout as delay } from "node:timers/promises";
 import { JSDOM } from "jsdom";
 import { parseCSV, protectSpreadsheetFormula } from "./csv.js";
+import { text, errorText } from "./i18n.js";
 
 const html = await readFile(new URL("./index.html", import.meta.url), "utf8");
 const source = (await readFile(new URL("./app.js", import.meta.url), "utf8"))
-  .replace(/^import .*;\n/, "")
+  .replace(/^import .*;\n/gm, "")
   .replaceAll("import.meta.url", '"https://csv.test/app.js"');
 
-function setup() {
+function setup(language = "en") {
   const dom = new JSDOM(html, {
     url: "https://csv.test/",
     runScripts: "outside-only",
   });
   const { window } = dom;
+  window.localStorage.setItem("hood-lens-language", language);
+  window.text = text;
+  window.errorText = errorText;
   const workers = [];
   window.protectSpreadsheetFormula = protectSpreadsheetFormula;
   window.HTMLElement.prototype.scrollIntoView = () => {};
@@ -35,6 +39,7 @@ function setup() {
           data: {
             result: parseCSV(this.data.file.contents, {
               delimiter: this.data.delimiter,
+              includeHeaderMetadata: true,
             }),
           },
         });
@@ -190,7 +195,7 @@ test("worker reads the file and returns parsed records or a readable error", asy
   const { runInNewContext } = await import("node:vm");
   const workerSource = (
     await readFile(new URL("./csv-worker.js", import.meta.url), "utf8")
-  ).replace(/^import .*;\n/, "");
+  ).replace(/^import .*;\n/gm, "");
   const messages = [];
   const self = { postMessage: (message) => messages.push(message) };
   runInNewContext(workerSource, { self, parseCSV, Error });
@@ -202,4 +207,58 @@ test("worker reads the file and returns parsed records or a readable error", asy
     data: { file: { text: async () => 'a,b\n1,"broken' } },
   });
   assert.match(messages[1].error, /unclosed quoted field/);
+});
+
+test("language switch translates the open table without changing records, search or page", async (t) => {
+  const { dom, el, load, window } = setup("pt");
+  t.after(() => dom.window.close());
+  load("bilingual.csv", "name,\nAna,1\nBeto,2").finish();
+  await delay(0);
+  assert.equal(window.document.documentElement.lang, "pt-BR");
+  assert.equal(
+    el("data-table").querySelectorAll("th button")[1].textContent,
+    "Coluna 2",
+  );
+  el("search").value = "Ana";
+  el("search").dispatchEvent(new window.Event("input"));
+  await delay(220);
+  window.document.querySelector('[data-language="en"]').click();
+  assert.equal(window.document.documentElement.lang, "en");
+  assert.equal(el("search").value, "Ana");
+  assert.equal(el("result-count").textContent, "1 match");
+  assert.equal(
+    el("data-table").querySelectorAll("th button")[1].textContent,
+    "Column 2",
+  );
+  assert.equal(el("data-table").querySelector("tbody").textContent, "Ana1");
+  assert.equal(window.localStorage.getItem("hood-lens-language"), "en");
+  window.document.querySelector('[data-language="pt"]').click();
+  assert.equal(el("result-count").textContent, "1 resultado");
+  assert.equal(el("page-label").textContent, "Página 1 de 1");
+  assert.equal(el("search").placeholder, "O que você procura?");
+});
+
+test("an existing error translates immediately when the language changes", async (t) => {
+  const { dom, el, load, window } = setup("pt");
+  t.after(() => dom.window.close());
+  load("invalid.csv", 'a,b\n1,"broken').finish();
+  await delay(0);
+  assert.match(el("error-box").textContent, /não foi fechado/);
+  window.document.querySelector('[data-language="en"]').click();
+  assert.match(el("error-box").textContent, /unclosed quoted field/);
+});
+
+test("language fallback and copyright are available without storing file data", () => {
+  const { dom, window } = setup("unexpected");
+  assert.equal(window.document.documentElement.lang, "pt-BR");
+  assert.equal(
+    window.document.querySelector(".footer a").href,
+    "https://behood.com.br/",
+  );
+  assert.equal(
+    window.document.querySelector("#copyright-year").textContent,
+    String(new Date().getFullYear()),
+  );
+  assert.equal(window.localStorage.length, 1);
+  dom.window.close();
 });

@@ -1,4 +1,5 @@
 import { protectSpreadsheetFormula } from "./csv.js";
+import { text, errorText } from "./i18n.js";
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
 const state = {
@@ -11,6 +12,9 @@ const state = {
   sortColumn: -1,
   sortDirection: 1,
   fileName: "",
+  fileSize: 0,
+  delimiter: ",",
+  generatedHeaderIndices: [],
 };
 const el = (id) => document.getElementById(id);
 const fileInput = el("file-input");
@@ -20,6 +24,86 @@ let activeWorker;
 let selectedFile;
 let searchTimer;
 let demoController;
+let language = "pt";
+let lastError = "";
+let lastAnnouncement;
+try {
+  language = localStorage.getItem("hood-lens-language") === "en" ? "en" : "pt";
+} catch {}
+const t = (key, values) => text(language, key, values);
+const locale = () => (language === "pt" ? "pt-BR" : "en-US");
+const number = (value) => value.toLocaleString(locale());
+const announcement = (key, values = {}) =>
+  t(
+    key,
+    Object.fromEntries(
+      Object.entries(values).map(([key, value]) => [
+        key,
+        typeof value === "number" ? number(value) : value,
+      ]),
+    ),
+  );
+const displayHeader = (index) =>
+  state.generatedHeaderIndices.includes(index)
+    ? t("column", { index: index + 1 })
+    : state.headers[index];
+function metadata() {
+  el("file-meta").textContent = t("meta", {
+    rows: number(state.rows.length),
+    columns: number(state.headers.length),
+    size: formatBytes(state.fileSize),
+    delimiter: t(
+      state.delimiter === "\t"
+        ? "delimiterTab"
+        : state.delimiter === ";"
+          ? "delimiterSemicolon"
+          : "delimiterComma",
+    ),
+  });
+}
+function applyLanguage(next, persist = false) {
+  language = next === "en" ? "en" : "pt";
+  document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
+  document.title = t("title");
+  document.querySelector('meta[name="description"]').content = t("description");
+  document.querySelector('meta[property="og:title"]').content = t("title");
+  document.querySelector('meta[property="og:description"]').content =
+    t("description");
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    node.textContent = t(node.dataset.i18n);
+  });
+  for (const attr of ["placeholder", "aria-label"]) {
+    document
+      .querySelectorAll(`[data-i18n-${attr}]`)
+      .forEach((node) =>
+        node.setAttribute(attr, t(node.getAttribute(`data-i18n-${attr}`))),
+      );
+  }
+  document
+    .querySelectorAll("[data-language]")
+    .forEach((button) =>
+      button.setAttribute(
+        "aria-pressed",
+        String(button.dataset.language === language),
+      ),
+    );
+  if (persist) {
+    try {
+      localStorage.setItem("hood-lens-language", language);
+    } catch {}
+  }
+  if (state.headers.length) {
+    metadata();
+    render();
+  }
+  if (!el("error-box").hidden && lastError)
+    el("error-box").textContent = errorText(language, lastError);
+  if (lastAnnouncement)
+    el("status").textContent = announcement(
+      lastAnnouncement.key,
+      lastAnnouncement.values,
+    );
+}
 
 function stopPending() {
   loadVersion++;
@@ -56,6 +140,9 @@ function clearData() {
   state.sortColumn = -1;
   state.sortDirection = 1;
   state.fileName = "";
+  state.fileSize = 0;
+  state.generatedHeaderIndices = [];
+  lastAnnouncement = undefined;
   for (const id of [
     "file-name",
     "file-meta",
@@ -100,19 +187,22 @@ function normalize(value) {
   return String(value)
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("en-US");
+    .toLocaleLowerCase(locale());
 }
-function announce(message) {
-  el("status").textContent = message;
+function announce(key, values) {
+  lastAnnouncement = { key, values };
+  el("status").textContent = announcement(key, values);
 }
 function formatBytes(bytes) {
-  return bytes < 1024 * 1024
-    ? `${(bytes / 1024).toFixed(1)} KB`
-    : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  const megabytes = bytes >= 1024 * 1024;
+  const value = bytes / (megabytes ? 1024 * 1024 : 1024);
+  return `${value.toLocaleString(locale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ${megabytes ? "MB" : "KB"}`;
 }
+
 function showError(message) {
   const box = el("error-box");
-  box.textContent = message;
+  lastError = message;
+  box.textContent = errorText(language, message);
   box.hidden = false;
 }
 
@@ -124,7 +214,7 @@ function updateFiltered() {
   if (state.sortColumn >= 0) {
     state.filtered.sort(
       (a, b) =>
-        a[state.sortColumn].localeCompare(b[state.sortColumn], "en-US", {
+        a[state.sortColumn].localeCompare(b[state.sortColumn], locale(), {
           numeric: true,
           sensitivity: "base",
         }) * state.sortDirection,
@@ -146,12 +236,13 @@ function render() {
   tbody.replaceChildren();
 
   const headRow = document.createElement("tr");
-  state.headers.forEach((header, index) => {
+  state.headers.forEach((_, index) => {
+    const header = displayHeader(index);
     const th = document.createElement("th");
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = `${header}${state.sortColumn === index ? (state.sortDirection === 1 ? " ↑" : " ↓") : ""}`;
-    button.setAttribute("aria-label", `Sort by ${header}`);
+    button.setAttribute("aria-label", t("sort", { header }));
     th.scope = "col";
     th.setAttribute(
       "aria-sort",
@@ -176,7 +267,7 @@ function render() {
       td = document.createElement("td");
     td.colSpan = state.headers.length;
     td.className = "empty";
-    td.textContent = "No matches. Try a different search.";
+    td.textContent = t("noMatches");
     tr.append(td);
     tbody.append(tr);
   } else {
@@ -191,15 +282,20 @@ function render() {
       tbody.append(tr);
     });
   }
-  el("result-count").textContent =
-    `${total.toLocaleString("en-US")} match${total === 1 ? "" : "es"}`;
-  el("page-label").textContent = `Page ${state.page} of ${pages}`;
+  el("result-count").textContent = t("resultCount", {
+    count: number(total),
+    plural: total === 1 ? "" : language === "pt" ? "s" : "es",
+  });
+  el("page-label").textContent = t("page", {
+    page: number(state.page),
+    pages: number(pages),
+  });
   el("previous").disabled = state.page <= 1;
   el("next").disabled = state.page >= pages;
   const stats = [
-    ["ROWS", state.rows.length],
-    ["COLUMNS", state.headers.length],
-    ["MATCHES", total],
+    [t("rows"), state.rows.length],
+    [t("columns"), state.headers.length],
+    [t("matches"), total],
   ];
   el("stats").replaceChildren(
     ...stats.map(([label, value]) => {
@@ -210,7 +306,7 @@ function render() {
       caption.textContent = label;
       const metric = document.createElement("span");
       metric.className = "stat-value";
-      metric.textContent = value.toLocaleString("en-US");
+      metric.textContent = number(value);
       card.append(caption, metric);
       return card;
     }),
@@ -237,7 +333,7 @@ async function loadFile(file) {
   }
   clearData();
   setBusy(true);
-  announce("Reading your file.");
+  announce("reading");
   try {
     const selection = el("delimiter").value;
     const delimiter =
@@ -246,26 +342,29 @@ async function loadFile(file) {
       headers,
       rows,
       delimiter: detected,
+      generatedHeaderIndices = [],
     } = await parseFile(file, delimiter);
     if (version !== loadVersion) return;
     state.headers = headers;
     state.rows = rows;
+    state.generatedHeaderIndices = generatedHeaderIndices;
+    state.fileSize = file.size;
+    state.delimiter = detected;
     state.fileName = file.name;
     state.query = "";
     state.sortColumn = -1;
     state.sortDirection = 1;
     el("search").value = "";
     el("file-name").textContent = file.name;
-    el("file-meta").textContent =
-      `${rows.length.toLocaleString("en-US")} rows · ${headers.length} columns · ${formatBytes(file.size)} · delimiter: ${detected === "\t" ? "tab" : detected === ";" ? "semicolon" : "comma"}`;
+    metadata();
     el("workspace").hidden = false;
     document.body.classList.add("has-data");
     updateFiltered();
-    announce(`${file.name} opened with ${rows.length} rows.`);
+    announce("opened", { name: file.name, count: rows.length });
     el("workspace").scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     if (version !== loadVersion) return;
-    announce("Could not open the file.");
+    announce("failed");
     showError(
       error instanceof Error ? error.message : "Could not read this file.",
     );
@@ -340,7 +439,7 @@ function closeFile() {
   el("error-box").textContent = "";
   el("error-box").hidden = true;
   el("choose-file").focus();
-  announce("File closed.");
+  announce("closed");
 }
 el("clear-file").addEventListener("click", closeFile);
 el("cancel-load").addEventListener("click", closeFile);
@@ -348,7 +447,10 @@ el("export").addEventListener("click", () => {
   clearTimeout(searchTimer);
   updateFiltered();
   const quote = (value) => `"${String(value).replaceAll('"', '""')}"`;
-  const csv = [state.headers, ...state.filtered.map((row) => row)]
+  const csv = [
+    state.headers.map((_, index) => displayHeader(index)),
+    ...state.filtered.map((row) => row),
+  ]
     .map((row) =>
       row.map((value) => quote(protectSpreadsheetFormula(value))).join(";"),
     )
@@ -359,12 +461,12 @@ el("export").addEventListener("click", () => {
   const link = document.createElement("a");
   link.href = url;
   link.hidden = true;
-  link.download = `${state.fileName.replace(/\.csv$/i, "").replace(/[^\p{L}\p{N}._-]+/gu, "_")}-filtered.csv`;
+  link.download = `${state.fileName.replace(/\.csv$/i, "").replace(/[^\p{L}\p{N}._-]+/gu, "_")}-${t("filteredSuffix")}.csv`;
   document.body.append(link);
   link.click();
   link.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-  announce(`${state.filtered.length} rows exported.`);
+  announce("exported", { count: state.filtered.length });
 });
 document.addEventListener("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
@@ -373,3 +475,17 @@ document.addEventListener("keydown", (e) => {
     el("search").focus();
   }
 });
+
+document
+  .querySelectorAll("[data-language]")
+  .forEach((button) =>
+    button.addEventListener("click", () =>
+      applyLanguage(button.dataset.language, true),
+    ),
+  );
+el("copyright-year").textContent = new Date().getFullYear();
+const about = el("about-dialog");
+el("about-open").addEventListener("click", () => about.showModal());
+for (const id of ["about-close", "about-x"])
+  el(id).addEventListener("click", () => about.close());
+applyLanguage(language);

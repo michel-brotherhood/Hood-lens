@@ -133,7 +133,10 @@ function chooseDelimiter(source) {
   return DELIMITERS[scores.indexOf(Math.max(...scores))];
 }
 
-function parseCSV(text, { delimiter: selectedDelimiter } = {}) {
+function parseCSV(
+  text,
+  { delimiter: selectedDelimiter, includeHeaderMetadata = false } = {},
+) {
   if (
     selectedDelimiter !== undefined &&
     !DELIMITERS.includes(selectedDelimiter)
@@ -159,7 +162,12 @@ function parseCSV(text, { delimiter: selectedDelimiter } = {}) {
       Array.from({ length: columnCount }, (_, index) => record[index] ?? ""),
     );
 
-  return { headers, rows, delimiter };
+  const result = { headers, rows, delimiter };
+  if (includeHeaderMetadata)
+    result.generatedHeaderIndices = headers.flatMap((_, index) =>
+      records[0][index]?.trim() ? [] : [index],
+    );
+  return result;
 }
 
 function protectSpreadsheetFormula(value) {

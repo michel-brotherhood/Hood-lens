@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0 — Behood workspace
+
+- Replaces the dark poster-like composition with a light application workspace and compact branded sidebar.
+- Adds Portuguese and English, including live translation of table controls, errors and generated headers.
+- Saves only the language preference; changing language preserves the current file and search.
+- Integrates the Hood emblem with transparent backgrounds.
+- Adds the Behood copyright and behood.com.br links.
+- Adds an About dialog with privacy and input limits in both languages.
+
 ## 1.2.0 — Hood Lens
 
 - Renames the product to Hood Lens; repository URLs remain unchanged.
