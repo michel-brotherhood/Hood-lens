@@ -1,33 +1,18 @@
-# Como contribuir
+# Contributing to Hood Lens
 
-Obrigado por considerar uma contribuição ao CSV Lens.
+Open an issue describing a bug or proposed behavior change before submitting a pull request. Keep changes focused and avoid runtime dependencies unless necessary. Never include client CSVs, personal information or credentials.
 
-## Antes de abrir uma alteração
-
-1. Abra uma issue para falhas ou propostas que mudem o comportamento.
-2. Mantenha o projeto sem dependências de runtime quando possível.
-3. Não inclua CSVs de clientes, dados pessoais, credenciais ou arquivos internos.
-4. Prefira mudanças pequenas e explique o problema que elas resolvem.
-
-## Desenvolvimento local
-
-Sirva a pasta do projeto por HTTP e abra `http://localhost:8080`:
+Use Node.js 24 or newer:
 
 ```bash
-python3 -m http.server 8080 --bind 127.0.0.1
-```
-
-Abrir `index.html` por `file://` pode bloquear os módulos JavaScript. Para validar as mudanças com Node.js 20 ou superior:
-
-```bash
+npm ci
 npm test
+npm run build
 node --check app.js
 node --check csv.js
+node --check csv-worker.js
 ```
 
-Adicione testes para mudanças no parser, sobretudo para aspas, separadores, linhas irregulares e finais de linha.
+Serve `dist/` or the source directory over HTTP to test module scripts and workers. For visual changes, check narrow and wide layouts, keyboard navigation, focus, empty/error/loading states and reduced motion. Use synthetic data only in examples and screenshots.
 
-## Pull requests
-
-Descreva o comportamento anterior, o novo comportamento e a forma de validação. Se a interface mudar, inclua capturas de tela próprias com dados fictícios. Não use dados reais ou confidenciais nas imagens.
-
+Describe the problem, the resulting behavior and the checks actually performed in each pull request. Add meaningful parser and lifecycle regression tests when changing behavior. Source code is MIT licensed; brand artwork has separate rights as described in README.md.

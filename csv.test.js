@@ -60,7 +60,7 @@ test("preserves escaped quotes, delimiters and newlines inside quoted fields", (
 
 test("preserves irregular rows by adding columns and padding missing values", () => {
   assert.deepEqual(parseCSV("a,b\n1\n2,3,4"), {
-    headers: ["a", "b", "Coluna 3"],
+    headers: ["a", "b", "Column 3"],
     rows: [
       ["1", "", ""],
       ["2", "3", "4"],
@@ -81,13 +81,17 @@ test("ignores blank lines and supports CRLF line endings", () => {
 });
 
 test("rejects an unclosed quoted field", () => {
-  assert.throws(() => parseCSV('a,b\n1,"broken'), /aspas que não foi fechado/);
+  assert.throws(() => parseCSV('a,b\n1,"broken'), /unclosed quoted field/);
 });
 
 test("preserves records with explicitly empty fields while ignoring blank lines", () => {
   assert.deepEqual(parseCSV('a,b\r\n,\r\n\r\n"",""\r\n1,2\r\n'), {
     headers: ["a", "b"],
-    rows: [["", ""], ["", ""], ["1", "2"]],
+    rows: [
+      ["", ""],
+      ["", ""],
+      ["1", "2"],
+    ],
     delimiter: ",",
   });
 });
@@ -101,19 +105,19 @@ test("preserves a quoted empty record in a single-column CSV", () => {
 });
 
 test("accepts an empty data record and generates names for empty headers", () => {
-  assert.deepEqual(parseCSV(';\n;'), {
-    headers: ["Coluna 1", "Coluna 2"],
+  assert.deepEqual(parseCSV(";\n;"), {
+    headers: ["Column 1", "Column 2"],
     rows: [["", ""]],
     delimiter: ";",
   });
 });
 
 test("rejects invalid content after a quoted field", () => {
-  assert.throws(() => parseCSV('a,b\n"value"oops,2'), /texto inesperado/);
+  assert.throws(() => parseCSV('a,b\n"value"oops,2'), /Unexpected text/);
 });
 
 test("rejects files with no data rows", () => {
-  assert.throws(() => parseCSV("a,b"), /linhas de dados suficientes/);
+  assert.throws(() => parseCSV("a,b"), /header and at least one data row/);
 });
 
 test("protects formula-like spreadsheet values without changing numbers", () => {
@@ -123,3 +127,50 @@ test("protects formula-like spreadsheet values without changing numbers", () => 
   assert.equal(protectSpreadsheetFormula("Texto normal"), "Texto normal");
 });
 
+test("prefers the header delimiter over commas in unquoted values", () => {
+  assert.deepEqual(
+    parseCSV("produto;tags\nA;azul,verde,vermelho\nB;preto,branco,cinza"),
+    {
+      headers: ["produto", "tags"],
+      rows: [
+        ["A", "azul,verde,vermelho"],
+        ["B", "preto,branco,cinza"],
+      ],
+      delimiter: ";",
+    },
+  );
+});
+
+test("accepts files made entirely of quoted empty fields", () => {
+  assert.deepEqual(parseCSV('""\n""'), {
+    headers: ["Column 1"],
+    rows: [[""]],
+    delimiter: ",",
+  });
+});
+
+test("supports an explicit delimiter for ambiguous CSV files", () => {
+  assert.deepEqual(
+    parseCSV("nome,completo;valor\nAna;10", { delimiter: ";" }),
+    {
+      headers: ["nome,completo", "valor"],
+      rows: [["Ana", "10"]],
+      delimiter: ";",
+    },
+  );
+  assert.throws(
+    () => parseCSV("a|b\n1|2", { delimiter: "|" }),
+    /Invalid delimiter/,
+  );
+});
+
+test("neutralizes formulas after leading control characters", () => {
+  for (const prefix of ["\n", "\r\n", "\t", "\u0000", " \n\t", "\uFEFF"]) {
+    assert.equal(
+      protectSpreadsheetFormula(prefix + "=1+1"),
+      "'" + prefix + "=1+1",
+    );
+  }
+  assert.equal(protectSpreadsheetFormula("-42.50"), "-42.50");
+  assert.equal(protectSpreadsheetFormula("texto\n=1+1"), "texto\n=1+1");
+});

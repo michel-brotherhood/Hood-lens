@@ -45,13 +45,11 @@ function parseRecords(source, delimiter) {
       } else if (char === " " || char === "\t") {
         // Espaços entre o fechamento das aspas e o separador são ignorados.
       } else {
-        throw new Error(
-          "Encontrei texto inesperado depois de um campo entre aspas.",
-        );
+        throw new Error("Unexpected text after a quoted field.");
       }
     } else if (char === '"') {
       if (field.length !== 0)
-        throw new Error("Aspas fora do início de um campo entre aspas.");
+        throw new Error("A quote was found inside an unquoted field.");
       inQuotes = true;
     } else if (char === delimiter) {
       finishField();
@@ -63,8 +61,7 @@ function parseRecords(source, delimiter) {
     }
   }
 
-  if (inQuotes)
-    throw new Error("O arquivo tem um campo entre aspas que não foi fechado.");
+  if (inQuotes) throw new Error("The file contains an unclosed quoted field.");
   finishRow();
   return records;
 }
@@ -95,6 +92,7 @@ function chooseDelimiter(source) {
   for (let index = 0; index < source.length; index++) {
     const char = source[index];
     if (char === '"') {
+      rowHasContent = true;
       if (inQuotes && source[index + 1] === '"') {
         rowHasContent = true;
         index++;
@@ -119,23 +117,33 @@ function chooseDelimiter(source) {
   }
   finishRecord();
 
-  if (records === 0) throw new Error("Não foi possível interpretar o CSV.");
+  if (records === 0) throw new Error("Could not parse this CSV.");
 
   const scores = totals.map((total, index) => {
     const width = firstWidths[index] ?? 1;
     const averageWidth = total / records;
     const consistency = matchingRecords[index] / records;
-    return averageWidth * 100 + consistency * 10 + Math.min(width, 50) / 100;
+    return (
+      (width > 1 ? 1000 : 0) +
+      consistency * 100 +
+      Math.min(width, 50) +
+      Math.min(averageWidth, 50) / 100
+    );
   });
   return DELIMITERS[scores.indexOf(Math.max(...scores))];
 }
 
-function parseCSV(text) {
+function parseCSV(text, { delimiter: selectedDelimiter } = {}) {
+  if (
+    selectedDelimiter !== undefined &&
+    !DELIMITERS.includes(selectedDelimiter)
+  )
+    throw new Error("Invalid delimiter. Choose comma, semicolon or tab.");
   const source = text.replace(/^\uFEFF/, "");
-  const delimiter = chooseDelimiter(source);
+  const delimiter = selectedDelimiter ?? chooseDelimiter(source);
   const records = parseRecords(source, delimiter);
   if (records.length < 2)
-    throw new Error("Não encontrei cabeçalho e linhas de dados suficientes.");
+    throw new Error("The file needs a header and at least one data row.");
 
   const columnCount = records.reduce(
     (maximum, record) => Math.max(maximum, record.length),
@@ -143,7 +151,7 @@ function parseCSV(text) {
   );
   const headers = Array.from({ length: columnCount }, (_, index) => {
     const value = records[0][index]?.trim();
-    return value || `Coluna ${index + 1}`;
+    return value || `Column ${index + 1}`;
   });
   const rows = records
     .slice(1)
@@ -156,10 +164,9 @@ function parseCSV(text) {
 
 function protectSpreadsheetFormula(value) {
   const text = String(value);
-  const formulaLike = /^[\t\r ]*[=+@-]/.test(text);
+  const formulaLike = /^[\u0000-\u0020\uFEFF]*[=+@-]/.test(text);
   const numeric = /^[\t ]*[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(text);
   return formulaLike && !numeric ? `'${text}` : text;
 }
 
 export { parseCSV, protectSpreadsheetFormula };
-

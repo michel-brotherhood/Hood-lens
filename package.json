@@ -1,12 +1,19 @@
 {
-  "name": "csv-lens",
-  "version": "1.0.0",
+  "name": "hood-lens",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "benchmark": "node scripts/benchmark-csv.mjs"
+    "benchmark": "node scripts/benchmark-csv.mjs",
+    "build": "node scripts/build.mjs"
   },
   "author": "Michel Brotherhood",
-  "description": "Explore arquivos CSV no navegador: busque, ordene e exporte dados sem enviar os arquivos para um servidor."
+  "description": "A closer look at your CSV. Search, sort and export data locally in your browser.",
+  "devDependencies": {
+    "jsdom": "^31.0.1"
+  },
+  "engines": {
+    "node": ">=24"
+  }
 }

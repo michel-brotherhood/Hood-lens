@@ -1,10 +1,9 @@
-# Segurança
+# Security
 
-O CSV Lens processa os arquivos no navegador e não os envia para um servidor. Ainda assim, arquivos podem conter dados pessoais, fórmulas ou conteúdo malformado.
+Do not publish sensitive CSV files, credentials or exploitable vulnerability details in a public issue.
 
-- Não publique arquivos CSV reais em issues, pull requests ou capturas de tela.
-- Ao reportar uma falha, descreva a versão do navegador, o tamanho aproximado e um exemplo mínimo com dados fictícios.
-- Remova nomes, e-mails, documentos e outros dados identificáveis de qualquer reprodução.
-- A exportação prefixa fórmulas suspeitas com apóstrofo, mas aplicativos de planilha podem variar no tratamento desses valores. Confira a origem e o conteúdo antes de abrir CSVs desconhecidos.
+For a suspected vulnerability, use GitHub's private vulnerability reporting option in the repository's Security tab if available. If it is unavailable, open a minimal issue requesting a private reporting channel without disclosing exploit details or private data.
 
-Para vulnerabilidades que possam afetar usuários, use o recurso **Report a vulnerability** do GitHub quando estiver habilitado no repositório, em vez de publicar detalhes em uma issue pública.
+Hood Lens processes files locally and renders imported values as text. Spreadsheet formula protection is a mitigation, not a guarantee for every spreadsheet application. Test exports with synthetic values in your target software.
+
+Browser storage, malicious browser extensions and a compromised hosting origin are outside the app's local-processing promise. Keep dependencies and hosting configuration maintained.

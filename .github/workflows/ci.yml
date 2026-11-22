@@ -28,3 +28,7 @@ jobs:
         run: |
           node --check app.js
           node --check csv.js
+          node --check csv-worker.js
+
+      - name: Gerar arquivos estáticos
+        run: npm run build
